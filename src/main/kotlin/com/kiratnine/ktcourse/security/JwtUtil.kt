@@ -35,9 +35,6 @@ class JwtUtil {
     fun getUsername(token: String): String =
         parseClaims(token).body.subject
 
-    fun getRole(token: String): String =
-        parseClaims(token).body["role"].toString()
-
     fun validateToken(token: String): Boolean = try {
         parseClaims(token)
         true
