@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: kt-course
+  datasource:
+    url: jdbc:postgresql://localhost:<port>/<base>
+    username: <username>
+    password: <password>
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+minio:
+  url: URL
+  access-key: <public key>
+  secret-key: <secret key>
+  bucket: <bucket name>
