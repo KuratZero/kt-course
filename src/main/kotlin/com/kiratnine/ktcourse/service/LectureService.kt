@@ -12,6 +12,7 @@ import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.repository.SemesterRepository
 import com.kiratnine.ktcourse.security.CurrentUser
 import com.kiratnine.ktcourse.service.s3.ProfileS3Service
+import com.kiratnine.ktcourse.translator.service.TranslatorService
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -24,50 +25,51 @@ class LectureService(
     private val lectureRepository: LectureRepository,
     private val profileRepository: ProfileRepository,
     private val profileMinioService: ProfileS3Service,
+    private val translatorService: TranslatorService,
 ) {
-    fun getLectures(): List<LectureDto> {
+    fun getLectures(lang: String): List<LectureDto> {
         return lectureRepository.findAllByOrderByDateAsc()
-            .map(this::lectureToDto)
+            .map { lectureToDto(it, lang) }
     }
 
-    fun getLecturesBySemesterId(semesterId: Long): List<LectureDto> {
+    fun getLecturesBySemesterId(semesterId: Long, lang: String): List<LectureDto> {
         return lectureRepository.findAllBySemesterOrderByDateAsc(
             semesterRepository.findById(semesterId).orElseThrow()
-        ).map(this::lectureToDto)
+        ).map { lectureToDto(it, lang) }
     }
 
-    fun getLectureBySlug(slug: String): LectureDto =
-        lectureToDto(lectureRepository.findBySlug(slug).orElseThrow())
+    fun getLectureById(id: Long, lang: String): LectureDto =
+        lectureToDto(lectureRepository.findById(id).orElseThrow(), lang)
 
-    fun createLecture(input: NewLectureInputDto) {
+    fun createLecture(input: NewLectureInputDto): Long {
         validateLectureActions()
-        lectureRepository.save(input.toModel())
+        return lectureRepository.save(input.toModel(translatorService)).id!!
     }
 
-    fun deleteLectureBySlug(slug: String) {
+    fun deleteLectureById(id: Long) {
         validateLectureActions()
-        val lecture = lectureRepository.findBySlug(slug).orElseThrow()
+        val lecture = lectureRepository.findById(id).orElseThrow()
         lecture.removeProfiles()
         lectureRepository.save(lecture)
-        lectureRepository.deleteBySlug(slug)
+        lectureRepository.deleteById(id)
     }
 
-    fun replaceProfiles(slug: String, input: List<String>) {
+    fun replaceProfiles(id: Long, input: List<String>) {
         validateLectureActions()
-        val lecture = lectureRepository.findBySlug(slug).orElseThrow()
+        val lecture = lectureRepository.findById(id).orElseThrow()
         lecture.updateProfiles(profileRepository.findAllByLoginIn(input))
         lectureRepository.save(lecture)
     }
 
-    fun replacePresentation(slug: String, presentationId: String) {
+    fun replacePresentation(id: Long, presentationId: String) {
         validateLectureActions()
-        val lecture = lectureRepository.findBySlug(slug).orElseThrow()
+        val lecture = lectureRepository.findById(id).orElseThrow()
         lecture.presentationId = presentationId
         lectureRepository.save(lecture)
     }
 
-    private fun lectureToDto(lecture: Lecture): LectureDto =
-        lecture.toDto(getAvatarsMap(lecture))
+    private fun lectureToDto(lecture: Lecture, lang: String): LectureDto =
+        lecture.toDto(getAvatarsMap(lecture), lang)
 
     private fun getAvatarsMap(lecture: Lecture): Map<Long, String?> =
         lecture.profiles.stream()

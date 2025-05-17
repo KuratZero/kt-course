@@ -43,6 +43,8 @@ class Profile(
     @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     val contacts: MutableList<Contact> = mutableListOf(),
 
+    val favourites: MutableSet<Lecture> = mutableSetOf(),
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = DbTable.PROFILE_LECTURES,

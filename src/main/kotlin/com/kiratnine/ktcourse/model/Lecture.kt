@@ -1,6 +1,8 @@
 package com.kiratnine.ktcourse.model
 
 import com.kiratnine.ktcourse.model.constant.DbFields
+import com.kiratnine.ktcourse.model.converter.MapToJsonConverter
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
@@ -13,11 +15,11 @@ import java.time.LocalDateTime
  */
 @Entity
 class Lecture(
-    val slug: String,
-    val title: String,
-    val description: String,
+    @Convert(converter = MapToJsonConverter::class)
+    val title: LocalizedString,
+    @Convert(converter = MapToJsonConverter::class)
+    val description: LocalizedString,
     val date: LocalDateTime,
-    val topicName: String,
 
     var presentationId: String? = null,
 

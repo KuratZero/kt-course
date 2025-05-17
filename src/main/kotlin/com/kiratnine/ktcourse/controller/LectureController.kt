@@ -23,28 +23,34 @@ class LectureController(
     private val lectureService: LectureService,
 ) {
     @GetMapping("/lectures")
-    fun getLecturesBySemesterId(@RequestParam(required = false) semesterId: Long?): List<LectureDto> =
-        if (semesterId != null) lectureService.getLecturesBySemesterId(semesterId)
-        else lectureService.getLectures()
+    fun getLecturesBySemesterId(
+        @RequestParam(required = false) semesterId: Long?,
+        @RequestParam(required = false) lang: String = "ru",
+    ): List<LectureDto> =
+        if (semesterId != null) lectureService.getLecturesBySemesterId(semesterId, lang)
+        else lectureService.getLectures(lang)
 
-    @GetMapping("/lectures/{slug}")
+    @GetMapping("/lectures/{id}")
     @Operation(summary = "Ручка для странички лекции")
-    fun getLectureBySlug(@PathVariable("slug") slug: String): LectureDto =
-        lectureService.getLectureBySlug(slug)
+    fun getLectureById(
+        @PathVariable("id") id: Long,
+        @RequestParam(required = false) lang: String = "ru",
+    ): LectureDto =
+        lectureService.getLectureById(id, lang)
 
     @PostMapping("/lectures")
-    fun createLecture(@RequestBody request: NewLectureInputDto) =
+    fun createLecture(@RequestBody request: NewLectureInputDto): Long =
         lectureService.createLecture(request)
 
-    @DeleteMapping("/lectures/{slug}")
-    fun deleteLectureBySlug(@PathVariable("slug") slug: String) =
-        lectureService.deleteLectureBySlug(slug)
+    @DeleteMapping("/lectures/{id}")
+    fun deleteLectureBySlug(@PathVariable("id") id: Long) =
+        lectureService.deleteLectureById(id)
 
-    @PatchMapping("/lectures/{slug}/profiles")
-    fun replaceProfiles(@PathVariable("slug") slug: String, @RequestBody logins: List<String>) =
-        lectureService.replaceProfiles(slug, logins)
+    @PatchMapping("/lectures/{id}/profiles")
+    fun replaceProfiles(@PathVariable("id") id: Long, @RequestBody logins: List<String>) =
+        lectureService.replaceProfiles(id, logins)
 
-    @PatchMapping("/lectures/{slug}/presentation")
-    fun replacePresentation(@PathVariable("slug") slug: String, @RequestBody presentation: String) =
-        lectureService.replacePresentation(slug, presentation)
+    @PatchMapping("/lectures/{id}/presentation")
+    fun replacePresentation(@PathVariable("id") id: Long, @RequestBody presentation: String) =
+        lectureService.replacePresentation(id, presentation)
 }

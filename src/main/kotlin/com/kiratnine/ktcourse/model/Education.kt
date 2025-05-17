@@ -10,8 +10,6 @@ import jakarta.persistence.OneToOne
 class Education(
     val name: String,
     val degree: String,
-    val startDate: String,
-    val endDate: String,
 
     @OneToOne(mappedBy = "education")
     var profile: Profile,

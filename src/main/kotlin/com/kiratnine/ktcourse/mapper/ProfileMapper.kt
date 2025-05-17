@@ -29,22 +29,12 @@ fun WorkExperience.toDto(): WorkExperienceDto =
     WorkExperienceDto(
         companyName = companyName,
         jobName = jobName,
-        location = location,
-        description = description,
-        startDate = startDate,
-        endDate = endDate,
-        occupationType = occupationType
     )
 
 fun WorkExperienceDto.toModel(profile: Profile): WorkExperience =
     WorkExperience(
         companyName = companyName,
         jobName = jobName,
-        location = location,
-        description = description,
-        startDate = startDate,
-        endDate = endDate,
-        occupationType = occupationType,
         profile = profile,
     )
 
@@ -52,16 +42,12 @@ fun Education.toDto(): EducationDto =
     EducationDto(
         name = name,
         degree = degree,
-        startDate = startDate,
-        endDate = endDate
     )
 
 fun EducationDto.toModel(profile: Profile): Education =
     Education(
         name = name,
         degree = degree,
-        startDate = startDate,
-        endDate = endDate,
         profile = profile,
     )
 

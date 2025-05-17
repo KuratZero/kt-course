@@ -12,6 +12,7 @@ import com.kiratnine.ktcourse.repository.LectureRepository
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.security.CurrentUser
 import com.kiratnine.ktcourse.service.s3.ProfileS3Service
+import com.kiratnine.ktcourse.translator.service.TranslatorService
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 
@@ -24,15 +25,16 @@ class CommentService(
     private val profileRepository: ProfileRepository,
     private val lectureRepository: LectureRepository,
     private val avatarService: ProfileS3Service,
+    private val translatorService: TranslatorService,
 ) {
-    fun addComment(lectureSlug: String, text: String) {
+    fun addComment(lectureId: Long, text: String): Long {
         val comment = Comment(
-            text = text,
-            lecture = getLecture(lectureSlug),
+            text = translatorService.translateString(text),
+            lecture = getLecture(lectureId),
             author = getProfile(CurrentUser.login()),
         )
 
-        commentRepository.save(comment)
+        return commentRepository.save(comment).id!!
     }
 
     fun deleteComment(commentId: Long) {
@@ -44,15 +46,15 @@ class CommentService(
         commentRepository.deleteById(commentId)
     }
 
-    fun getCommentsByLectureId(lectureSlug: String): List<CommentDto> =
-        commentRepository.findByLectureOrderByCreatedAtAsc(getLecture(lectureSlug))
-            .map { it.toDto(avatarService.getAvatarUrlOrNull(it.author)) }
+    fun getCommentsByLectureId(lectureId: Long, lang: String): List<CommentDto> =
+        commentRepository.findByLectureOrderByCreatedAtAsc(getLecture(lectureId))
+            .map { it.toDto(avatarService.getAvatarUrlOrNull(it.author), lang) }
 
     private fun getProfile(login: String): Profile =
         profileRepository.findByLogin(login)
             ?: throw EntityNotFoundException("Profile Not Found")
 
-    private fun getLecture(lectureSlug: String): Lecture =
-        lectureRepository.findBySlug(lectureSlug)
+    private fun getLecture(lectureId: Long): Lecture =
+        lectureRepository.findById(lectureId)
             .orElseThrow { EntityNotFoundException("Lecture Not Found") }
 }

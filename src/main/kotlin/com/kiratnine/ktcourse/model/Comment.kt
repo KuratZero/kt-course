@@ -1,6 +1,8 @@
 package com.kiratnine.ktcourse.model
 
 import com.kiratnine.ktcourse.model.constant.DbFields
+import com.kiratnine.ktcourse.model.converter.MapToJsonConverter
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.JoinColumn
@@ -12,7 +14,8 @@ import java.time.LocalDateTime
  */
 @Entity
 class Comment(
-    val text: String,
+    @Convert(converter = MapToJsonConverter::class)
+    val text: LocalizedString,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = DbFields.LECTURE_ID, nullable = false)

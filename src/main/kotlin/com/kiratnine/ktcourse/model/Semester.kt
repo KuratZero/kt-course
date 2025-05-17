@@ -1,6 +1,8 @@
 package com.kiratnine.ktcourse.model
 
+import com.kiratnine.ktcourse.model.converter.MapToJsonConverter
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.OneToMany
@@ -11,8 +13,10 @@ import jakarta.persistence.OrderBy
  */
 @Entity
 class Semester(
-    val title: String,
-    val description: String,
+    @Convert(converter = MapToJsonConverter::class)
+    val title: LocalizedString,
+    @Convert(converter = MapToJsonConverter::class)
+    val description: LocalizedString,
     val position: Long,
 
     @OrderBy("date ASC")

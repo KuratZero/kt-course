@@ -10,13 +10,13 @@ import com.kiratnine.ktcourse.model.Profile
  */
 fun Lecture.toDto(
     avatarUrlsById: Map<Long, String?>,
+    lang: String,
 ): LectureDto =
     LectureDto(
-        slug = slug,
-        title = title,
-        description = description,
+        id = id!!,
+        title = title[lang]!!,
+        description = description[lang]!!,
         date = date,
-        topicName = topicName,
         profiles = profiles.map { it.toLectureDto(avatarUrlsById.getOrElse(it.id!!) { null }) }.toSet(),
         presentationId = presentationId
     )

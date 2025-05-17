@@ -10,6 +10,7 @@ import com.kiratnine.ktcourse.repository.LectureRepository
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.repository.SemesterRepository
 import com.kiratnine.ktcourse.security.CurrentUser
+import com.kiratnine.ktcourse.translator.service.TranslatorService
 import org.springframework.stereotype.Service
 
 /**
@@ -21,25 +22,26 @@ class SemesterService(
     private val lectureService: LectureService,
     private val profileRepository: ProfileRepository,
     private val lectureRepository: LectureRepository,
+    private val translateService: TranslatorService,
 ) {
-    fun getSemesters(): List<SemesterDto> =
+    fun getSemesters(lang: String): List<SemesterDto> =
         semesterRepository.findAllByOrderByPositionAsc()
-            .map { it.toDto(lectureService.getLecturesBySemesterId(it.id!!)) }
+            .map { it.toDto(lectureService.getLecturesBySemesterId(it.id!!, lang), lang) }
 
-    fun getSemester(id: Long): SemesterDto =
+    fun getSemester(id: Long, lang: String): SemesterDto =
         semesterRepository.findById(id).orElseThrow()
-            .toDto(lectureService.getLecturesBySemesterId(id))
+            .toDto(lectureService.getLecturesBySemesterId(id, lang), lang)
 
-    fun createSemester(input: NewSemesterInputDto) {
+    fun createSemester(input: NewSemesterInputDto): Long {
         validateSemesterActions()
-        semesterRepository.save(input.toModel())
+        return semesterRepository.save(input.toModel(translateService)).id!!
     }
 
-    fun replaceLectures(id: Long, lectureSlugs: List<String>) {
+    fun replaceLectures(id: Long, lectureIds: List<Long>) {
         validateSemesterActions()
         val semester = semesterRepository.findById(id).orElseThrow()
         semester.updateTopics(
-            lectureRepository.findAllBySlugIn(lectureSlugs)
+            lectureRepository.findAllByIdIn(lectureIds)
         )
         semesterRepository.save(semester)
     }

@@ -8,9 +8,9 @@ import com.kiratnine.ktcourse.model.Profile
 /**
  * @author Artemii Kazakov (kiratnine@)
  */
-fun Comment.toDto(avatarUrl: String?): CommentDto =
+fun Comment.toDto(avatarUrl: String?, lang: String): CommentDto =
     CommentDto(
-        text = text,
+        text = text[lang]!!,
         createdAt = createdAt,
         author = author.toDto(avatarUrl),
     )
