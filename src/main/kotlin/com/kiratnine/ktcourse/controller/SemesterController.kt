@@ -45,7 +45,6 @@ class SemesterController(
     fun replaceLectures(
         @PathVariable("semesterId") semesterId: Long,
         @RequestBody lectureIds: List<Long>,
-        @RequestParam(required = false) lang: String = "ru",
     ) =
         semesterService.replaceLectures(semesterId, lectureIds)
 
