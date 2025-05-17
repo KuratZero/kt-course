@@ -6,8 +6,7 @@ import java.time.LocalDateTime
  * @author Artemii Kazakov (kiratnine@)
  */
 data class LectureDto(
-    val imageUrl: String?,
-    val presentationUrl: String?,
+    val presentationId: String?,
     val slug: String,
     val title: String,
     val description: String,

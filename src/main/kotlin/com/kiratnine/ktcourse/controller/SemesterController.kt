@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController
  * @author Artemii Kazakov (kiratnine@)
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 class SemesterController(
     private val semesterService: SemesterService
 ) {

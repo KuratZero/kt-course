@@ -6,4 +6,5 @@ package com.kiratnine.ktcourse.dto.profile
 enum class ContactTypeDto {
     EMAIL,
     PHONE,
+    TELEGRAM,
 }

@@ -11,7 +11,7 @@ import com.kiratnine.ktcourse.repository.CommentRepository
 import com.kiratnine.ktcourse.repository.LectureRepository
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.security.CurrentUser
-import com.kiratnine.ktcourse.service.minio.ProfileMinioService
+import com.kiratnine.ktcourse.service.s3.ProfileS3Service
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 
@@ -23,7 +23,7 @@ class CommentService(
     private val commentRepository: CommentRepository,
     private val profileRepository: ProfileRepository,
     private val lectureRepository: LectureRepository,
-    private val avatarService: ProfileMinioService,
+    private val avatarService: ProfileS3Service,
 ) {
     fun addComment(lectureSlug: String, text: String) {
         val comment = Comment(

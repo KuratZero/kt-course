@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
  * @author Artemii Kazakov (kiratnine@)
  */
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/v1/auth")
 class AuthController(
     private val profileService: ProfileService,
 ) {

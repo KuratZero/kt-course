@@ -27,17 +27,17 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    "/api/v1/auth/**",
+                    "/v1/auth/**",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
-                    "/ping"
+                    "/v1/ping"
                 ).permitAll()
                     .requestMatchers(
                         HttpMethod.GET,
-                        "/api/v1/semesters/**",
-                        "/api/v1/lectures/**",
-                        "/api/v1/profiles/**",
-                        "/api/v1/comments/**",
+                        "/v1/semesters/**",
+                        "/v1/lectures/**",
+                        "/v1/profiles/**",
+                        "/v1/comments/**",
                     ).permitAll()
                     .anyRequest().authenticated()
             }

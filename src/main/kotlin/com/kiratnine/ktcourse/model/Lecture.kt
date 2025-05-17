@@ -19,7 +19,6 @@ class Lecture(
     val date: LocalDateTime,
     val topicName: String,
 
-    var imageId: String? = null,
     var presentationId: String? = null,
 
     @ManyToMany(mappedBy = "lectures", fetch = FetchType.LAZY)

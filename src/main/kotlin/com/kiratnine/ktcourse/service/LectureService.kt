@@ -11,10 +11,8 @@ import com.kiratnine.ktcourse.repository.LectureRepository
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.repository.SemesterRepository
 import com.kiratnine.ktcourse.security.CurrentUser
-import com.kiratnine.ktcourse.service.minio.LectureMinioService
-import com.kiratnine.ktcourse.service.minio.ProfileMinioService
+import com.kiratnine.ktcourse.service.s3.ProfileS3Service
 import org.springframework.stereotype.Service
-import org.springframework.web.multipart.MultipartFile
 import java.util.stream.Collectors
 
 /**
@@ -25,8 +23,7 @@ class LectureService(
     private val semesterRepository: SemesterRepository,
     private val lectureRepository: LectureRepository,
     private val profileRepository: ProfileRepository,
-    private val profileMinioService: ProfileMinioService,
-    private val lectureMinioService: LectureMinioService
+    private val profileMinioService: ProfileS3Service,
 ) {
     fun getLectures(): List<LectureDto> {
         return lectureRepository.findAllByOrderByDateAsc()
@@ -62,26 +59,15 @@ class LectureService(
         lectureRepository.save(lecture)
     }
 
-    fun replaceImage(slug: String, image: MultipartFile) {
+    fun replacePresentation(slug: String, presentationId: String) {
         validateLectureActions()
         val lecture = lectureRepository.findBySlug(slug).orElseThrow()
-        lecture.imageId = lectureMinioService.uploadImage(lecture, image)
-        lectureRepository.save(lecture)
-    }
-
-    fun replacePresentation(slug: String, presentation: MultipartFile) {
-        validateLectureActions()
-        val lecture = lectureRepository.findBySlug(slug).orElseThrow()
-        lecture.presentationId = lectureMinioService.uploadPresentation(lecture, presentation)
+        lecture.presentationId = presentationId
         lectureRepository.save(lecture)
     }
 
     private fun lectureToDto(lecture: Lecture): LectureDto =
-        lecture.toDto(
-            getAvatarsMap(lecture),
-            lectureMinioService.getImageUrlOrNull(lecture),
-            lectureMinioService.getPresentationUrlOrNull(lecture),
-        )
+        lecture.toDto(getAvatarsMap(lecture))
 
     private fun getAvatarsMap(lecture: Lecture): Map<Long, String?> =
         lecture.profiles.stream()

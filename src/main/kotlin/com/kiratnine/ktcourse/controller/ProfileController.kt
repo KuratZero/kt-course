@@ -3,7 +3,6 @@ package com.kiratnine.ktcourse.controller
 import com.kiratnine.ktcourse.dto.profile.ContactDto
 import com.kiratnine.ktcourse.dto.profile.EducationDto
 import com.kiratnine.ktcourse.dto.profile.ProfileDto
-import com.kiratnine.ktcourse.dto.profile.SkillDto
 import com.kiratnine.ktcourse.dto.profile.WorkExperienceDto
 import com.kiratnine.ktcourse.service.ProfileService
 import io.swagger.v3.oas.annotations.Operation
@@ -22,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile
  * @author Artemii Kazakov (kiratnine@)
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 class ProfileController(
     private val profileService: ProfileService
 ) {
@@ -43,26 +42,19 @@ class ProfileController(
         @RequestPart file: MultipartFile
     ) = profileService.replaceAvatar(login, file)
 
-    @PatchMapping("/profiles/{login}/skills")
-    @Operation(summary = "Ручка для смены скиллов, сколь угодно")
-    fun replaceSkills(
-        @PathVariable login: String,
-        @RequestBody skills: List<SkillDto>
-    ) = profileService.replaceSkills(login, skills)
-
-    @PatchMapping("/profiles/{login}/workExperiences")
-    @Operation(summary = "Ручка для смены опыта работы, с фронта разрешаем ровно одно, хотя можно сохранить сколько хочешь")
+    @PatchMapping("/profiles/{login}/workExperience")
+    @Operation(summary = "Ручка для смены опыта работы")
     fun replaceWorkExperiences(
         @PathVariable login: String,
-        @RequestBody workExperiences: List<WorkExperienceDto>
-    ) = profileService.replaceWorkExperiences(login, workExperiences)
+        @RequestBody workExperience: WorkExperienceDto
+    ) = profileService.replaceWorkExperiences(login, workExperience)
 
-    @PatchMapping("/profiles/{login}/educations")
+    @PatchMapping("/profiles/{login}/education")
     @Operation(summary = "Ручка для смены образования, с фронта разрешаем ровно одно, хотя можно сохранить сколько хочешь")
     fun replaceEducations(
         @PathVariable login: String,
-        @RequestBody educations: List<EducationDto>
-    ) = profileService.replaceEducations(login, educations)
+        @RequestBody education: EducationDto
+    ) = profileService.replaceEducations(login, education)
 
     @PatchMapping("/profiles/{login}/contacts")
     @Operation(summary = "Ручка для смены контактов, с фронта разрешаем не больше трёх, хотя можно сохранить сколько хочешь")

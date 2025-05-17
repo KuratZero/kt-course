@@ -4,13 +4,11 @@ import com.kiratnine.ktcourse.dto.profile.ContactDto
 import com.kiratnine.ktcourse.dto.profile.ContactTypeDto
 import com.kiratnine.ktcourse.dto.profile.EducationDto
 import com.kiratnine.ktcourse.dto.profile.ProfileDto
-import com.kiratnine.ktcourse.dto.profile.SkillDto
 import com.kiratnine.ktcourse.dto.profile.WorkExperienceDto
 import com.kiratnine.ktcourse.model.Contact
 import com.kiratnine.ktcourse.model.ContactType
 import com.kiratnine.ktcourse.model.Education
 import com.kiratnine.ktcourse.model.Profile
-import com.kiratnine.ktcourse.model.Skill
 import com.kiratnine.ktcourse.model.WorkExperience
 
 /**
@@ -21,23 +19,10 @@ fun Profile.toDto(avatarUrl: String?, isEditable: Boolean): ProfileDto =
         login = login,
         name = name,
         avatarUrl = avatarUrl,
-        skills = skills.map { it.toDto() },
-        workExperience = workExperience.map { it.toDto() },
-        education = education.map { it.toDto() },
+        workExperience = workExperience?.toDto(),
+        education = education?.toDto(),
         contacts = contacts.map { it.toDto() },
         isEditable = isEditable
-    )
-
-fun Skill.toDto(): SkillDto =
-    SkillDto(
-        skillName = skillName,
-        proficiency = proficiency
-    )
-
-fun SkillDto.toModel(): Skill =
-    Skill(
-        skillName = skillName,
-        proficiency = proficiency,
     )
 
 fun WorkExperience.toDto(): WorkExperienceDto =
@@ -51,7 +36,7 @@ fun WorkExperience.toDto(): WorkExperienceDto =
         occupationType = occupationType
     )
 
-fun WorkExperienceDto.toModel(): WorkExperience =
+fun WorkExperienceDto.toModel(profile: Profile): WorkExperience =
     WorkExperience(
         companyName = companyName,
         jobName = jobName,
@@ -60,6 +45,7 @@ fun WorkExperienceDto.toModel(): WorkExperience =
         startDate = startDate,
         endDate = endDate,
         occupationType = occupationType,
+        profile = profile,
     )
 
 fun Education.toDto(): EducationDto =
@@ -70,12 +56,13 @@ fun Education.toDto(): EducationDto =
         endDate = endDate
     )
 
-fun EducationDto.toModel(): Education =
+fun EducationDto.toModel(profile: Profile): Education =
     Education(
         name = name,
         degree = degree,
         startDate = startDate,
         endDate = endDate,
+        profile = profile,
     )
 
 fun Contact.toDto(): ContactDto =
@@ -94,10 +81,12 @@ fun ContactType.toDto(): ContactTypeDto =
     when (this) {
         ContactType.PHONE -> ContactTypeDto.PHONE
         ContactType.EMAIL -> ContactTypeDto.EMAIL
+        ContactType.TELEGRAM -> ContactTypeDto.TELEGRAM
     }
 
 fun ContactTypeDto.toModel(): ContactType =
     when (this) {
         ContactTypeDto.PHONE -> ContactType.PHONE
         ContactTypeDto.EMAIL -> ContactType.EMAIL
+        ContactTypeDto.TELEGRAM -> ContactType.TELEGRAM
     }

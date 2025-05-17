@@ -6,7 +6,6 @@ import com.kiratnine.ktcourse.dto.auth.JwtUserResponseDto
 import com.kiratnine.ktcourse.dto.profile.ContactDto
 import com.kiratnine.ktcourse.dto.profile.EducationDto
 import com.kiratnine.ktcourse.dto.profile.ProfileDto
-import com.kiratnine.ktcourse.dto.profile.SkillDto
 import com.kiratnine.ktcourse.dto.profile.WorkExperienceDto
 import com.kiratnine.ktcourse.exception.BadRequestException
 import com.kiratnine.ktcourse.mapper.toDto
@@ -16,7 +15,7 @@ import com.kiratnine.ktcourse.model.Role
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.security.CurrentUser
 import com.kiratnine.ktcourse.security.JwtUtil
-import com.kiratnine.ktcourse.service.minio.ProfileMinioService
+import com.kiratnine.ktcourse.service.s3.ProfileS3Service
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -29,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class ProfileService(
     private val profileRepository: ProfileRepository,
-    private val avatarService: ProfileMinioService,
+    private val avatarService: ProfileS3Service,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManager: AuthenticationManager,
     private val jwtUtil: JwtUtil,
@@ -95,24 +94,17 @@ class ProfileService(
         profileRepository.save(profile)
     }
 
-    fun replaceSkills(login: String, skills: List<SkillDto>) {
+    fun replaceWorkExperiences(login: String, workExperience: WorkExperienceDto) {
         validateProfileActions(login)
         val profile = getSafeProfile(login)
-        profile.replaceSkills(skills.map { it.toModel() })
+        profile.workExperience = workExperience.toModel(profile)
         profileRepository.save(profile)
     }
 
-    fun replaceWorkExperiences(login: String, workExperiences: List<WorkExperienceDto>) {
+    fun replaceEducations(login: String, education: EducationDto) {
         validateProfileActions(login)
         val profile = getSafeProfile(login)
-        profile.replaceWorkExperiences(workExperiences.map { it.toModel() })
-        profileRepository.save(profile)
-    }
-
-    fun replaceEducations(login: String, educations: List<EducationDto>) {
-        validateProfileActions(login)
-        val profile = getSafeProfile(login)
-        profile.replaceEducations(educations.map { it.toModel() })
+        profile.education = education.toModel(profile)
         profileRepository.save(profile)
     }
 

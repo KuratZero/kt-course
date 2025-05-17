@@ -12,9 +12,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-minio:
-  url: URL
-  access-key: <public key>
-  secret-key: <secret key>
-  bucket: <bucket name>

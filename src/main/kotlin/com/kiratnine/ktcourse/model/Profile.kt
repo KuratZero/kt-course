@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinTable
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 
 /**
  * @author Artemii Kazakov (kiratnine@)
@@ -31,16 +32,15 @@ class Profile(
 
     var avatarId: String? = null,
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val skills: MutableList<Skill> = mutableListOf(),
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = DbFields.WORK_EXPERIENCE_ID)
+    var workExperience: WorkExperience? = null,
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val workExperience: MutableList<WorkExperience> = mutableListOf(),
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = DbFields.EDUCATION_ID)
+    var education: Education? = null,
 
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val education: MutableList<Education> = mutableListOf(),
-
-    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profile", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     val contacts: MutableList<Contact> = mutableListOf(),
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -51,30 +51,6 @@ class Profile(
     )
     val lectures: MutableSet<Lecture> = mutableSetOf(),
 ) : BaseEntity() {
-    fun replaceSkills(skills: Collection<Skill>) {
-        this.skills.clear()
-        skills.forEach {
-            it.profile = this
-            this.skills.add(it)
-        }
-    }
-
-    fun replaceWorkExperiences(workExperiences: Collection<WorkExperience>) {
-        this.workExperience.clear()
-        workExperiences.forEach {
-            it.profile = this
-            this.workExperience.add(it)
-        }
-    }
-
-    fun replaceEducations(educations: Collection<Education>) {
-        this.education.clear()
-        educations.forEach {
-            it.profile = this
-            this.education.add(it)
-        }
-    }
-
     fun replaceContacts(contacts: Collection<Contact>) {
         this.contacts.clear()
         contacts.forEach {

@@ -35,8 +35,9 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    // AWS SDK for MinIO (S3 compatible)
-    implementation("io.minio:minio:8.4.3")
+    // AWS SDK S3
+    implementation("software.amazon.awssdk:s3:2.25.18")
+    implementation("software.amazon.awssdk:url-connection-client:2.25.18")
 
     // Swagger-ui
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")

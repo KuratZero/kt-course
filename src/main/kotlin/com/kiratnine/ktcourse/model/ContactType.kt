@@ -6,4 +6,5 @@ package com.kiratnine.ktcourse.model
 enum class ContactType {
     EMAIL,
     PHONE,
+    TELEGRAM,
 }

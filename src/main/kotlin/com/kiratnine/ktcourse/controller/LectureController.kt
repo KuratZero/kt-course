@@ -4,7 +4,6 @@ import com.kiratnine.ktcourse.dto.lecture.LectureDto
 import com.kiratnine.ktcourse.dto.lecture.NewLectureInputDto
 import com.kiratnine.ktcourse.service.LectureService
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -13,15 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 
 /**
  * @author Artemii Kazakov (kiratnine@)
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 class LectureController(
     private val lectureService: LectureService,
 ) {
@@ -47,11 +44,7 @@ class LectureController(
     fun replaceProfiles(@PathVariable("slug") slug: String, @RequestBody logins: List<String>) =
         lectureService.replaceProfiles(slug, logins)
 
-    @PatchMapping("/lectures/{slug}/image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replaceImage(@PathVariable("slug") slug: String, @RequestPart image: MultipartFile) =
-        lectureService.replaceImage(slug, image)
-
-    @PatchMapping("/lectures/{slug}/presentation", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun replacePresentation(@PathVariable("slug") slug: String, @RequestPart presentation: MultipartFile) =
+    @PatchMapping("/lectures/{slug}/presentation")
+    fun replacePresentation(@PathVariable("slug") slug: String, @RequestBody presentation: String) =
         lectureService.replacePresentation(slug, presentation)
 }

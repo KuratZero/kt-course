@@ -3,7 +3,6 @@ package com.kiratnine.ktcourse.controller
 import com.kiratnine.ktcourse.dto.comment.CommentDto
 import com.kiratnine.ktcourse.service.CommentService
 import jakarta.validation.constraints.Max
-import org.checkerframework.common.value.qual.MinLen
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController
  * @author Artemii Kazakov (kiratnine@)
  */
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/v1")
 class CommentController(
     private val commentService: CommentService,
 ) {
@@ -34,6 +33,6 @@ class CommentController(
     @PostMapping("/comments/{lectureSlug}")
     fun addComment(
         @PathVariable("lectureSlug") lectureSlug: String,
-        @RequestBody text: @MinLen(1) @Max(200) String
+        @RequestBody text: @Max(200) String
     ) = commentService.addComment(lectureSlug, text)
 }
