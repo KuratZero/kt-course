@@ -50,14 +50,14 @@ class ProfileController(
     ) = profileService.replaceWorkExperiences(login, workExperience)
 
     @PatchMapping("/profiles/{login}/education")
-    @Operation(summary = "Ручка для смены образования, с фронта разрешаем ровно одно, хотя можно сохранить сколько хочешь")
+    @Operation(summary = "Ручка для смены образования")
     fun replaceEducations(
         @PathVariable login: String,
         @RequestBody education: EducationDto
     ) = profileService.replaceEducations(login, education)
 
     @PatchMapping("/profiles/{login}/contacts")
-    @Operation(summary = "Ручка для смены контактов, с фронта разрешаем не больше трёх, хотя можно сохранить сколько хочешь")
+    @Operation(summary = "Ручка для смены контактов, с фронта должны сохранять ровно три")
     fun replaceContacts(
         @PathVariable login: String,
         @RequestBody contacts: List<ContactDto>

@@ -31,6 +31,9 @@ class Lecture(
     @ManyToMany(mappedBy = "favoriteLectures", fetch = FetchType.LAZY)
     var favoriteByProfiles: MutableSet<Profile> = mutableSetOf(),
 
+    @ManyToMany(mappedBy = "viewedLectures", fetch = FetchType.LAZY)
+    var viewedByProfiles: MutableSet<Profile> = mutableSetOf(),
+
     @ManyToOne
     @JoinColumn(name = DbFields.SEMESTER_ID)
     var semester: Semester? = null,

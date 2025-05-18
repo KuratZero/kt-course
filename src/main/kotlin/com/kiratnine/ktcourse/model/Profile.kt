@@ -58,6 +58,14 @@ class Profile(
         inverseJoinColumns = [JoinColumn(name = DbFields.LECTURE_ID)]
     )
     val favoriteLectures: MutableSet<Lecture> = mutableSetOf(),
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = DbTable.PROFILE_VIEWED_LECTURES,
+        joinColumns = [JoinColumn(name = DbFields.PROFILE_ID)],
+        inverseJoinColumns = [JoinColumn(name = DbFields.LECTURE_ID)]
+    )
+    val viewedLectures: MutableSet<Lecture> = mutableSetOf(),
 ) : BaseEntity() {
     fun replaceContacts(contacts: Collection<Contact>) {
         this.contacts.clear()

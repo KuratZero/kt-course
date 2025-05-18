@@ -38,8 +38,15 @@ class LectureService(
         ).map { lectureToDto(it, lang) }
     }
 
-    fun getLectureById(id: Long, lang: String): LectureDto =
-        lectureToDto(lectureRepository.findById(id).orElseThrow(), lang)
+    fun getLectureById(id: Long, lang: String): LectureDto {
+        val lecture = lectureRepository.findById(id).orElseThrow()
+        val user = profileRepository.findByLogin(CurrentUser.login())
+        if (user != null) {
+            user.viewedLectures.add(lecture)
+            profileRepository.save(user)
+        }
+        return lectureToDto(lecture, lang)
+    }
 
     fun createLecture(input: NewLectureInputDto): Long {
         validateLectureActions()

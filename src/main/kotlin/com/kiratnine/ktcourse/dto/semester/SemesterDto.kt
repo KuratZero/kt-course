@@ -11,4 +11,5 @@ data class SemesterDto(
     val description: String,
     val position: Long,
     val lectures: List<LectureDto>,
+    val percentOfView: Double?,
 )

@@ -6,6 +6,7 @@ import com.kiratnine.ktcourse.exception.BadRequestException
 import com.kiratnine.ktcourse.mapper.semester.toDto
 import com.kiratnine.ktcourse.mapper.semester.toModel
 import com.kiratnine.ktcourse.model.Role
+import com.kiratnine.ktcourse.model.Semester
 import com.kiratnine.ktcourse.repository.LectureRepository
 import com.kiratnine.ktcourse.repository.ProfileRepository
 import com.kiratnine.ktcourse.repository.SemesterRepository
@@ -26,11 +27,22 @@ class SemesterService(
 ) {
     fun getSemesters(lang: String): List<SemesterDto> =
         semesterRepository.findAllByOrderByPositionAsc()
-            .map { it.toDto(lectureService.getLecturesBySemesterId(it.id!!, lang), lang) }
+            .map {
+                it.toDto(
+                    lectureService.getLecturesBySemesterId(it.id!!, lang),
+                    lang,
+                    computePercentOfView(it)
+                )
+            }
 
-    fun getSemester(id: Long, lang: String): SemesterDto =
-        semesterRepository.findById(id).orElseThrow()
-            .toDto(lectureService.getLecturesBySemesterId(id, lang), lang)
+    fun getSemester(id: Long, lang: String): SemesterDto {
+        val semester = semesterRepository.findById(id).orElseThrow()
+        return semester.toDto(
+            lectureService.getLecturesBySemesterId(id, lang),
+            lang,
+            computePercentOfView(semester)
+        )
+    }
 
     fun createSemester(input: NewSemesterInputDto): Long {
         validateSemesterActions()
@@ -60,5 +72,11 @@ class SemesterService(
         } else {
             throw BadRequestException("Do not allow semester actions")
         }
+    }
+
+    private fun computePercentOfView(semester: Semester): Double? {
+        val user = profileRepository.findByLogin(CurrentUser.login()) ?: return null
+        return semester.lectures.count { user.viewedLectures.contains(it) }
+            .toDouble() / semester.lectures.size.toDouble()
     }
 }
