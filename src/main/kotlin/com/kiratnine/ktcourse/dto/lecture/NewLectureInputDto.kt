@@ -9,4 +9,5 @@ data class NewLectureInputDto(
     val title: String,
     val description: String,
     val date: LocalDateTime,
+    val tags: Set<String>,
 )

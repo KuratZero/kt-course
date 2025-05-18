@@ -12,4 +12,5 @@ fun NewLectureInputDto.toModel(translatorService: TranslatorService): Lecture =
         title = translatorService.translateString(title),
         description = translatorService.translateString(description),
         date = date,
+        tags = tags as MutableSet<String>,
     )

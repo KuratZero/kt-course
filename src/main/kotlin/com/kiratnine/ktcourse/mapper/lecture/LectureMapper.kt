@@ -17,8 +17,9 @@ fun Lecture.toDto(
         title = title[lang]!!,
         description = description[lang]!!,
         date = date,
-        profiles = profiles.map { it.toLectureDto(avatarUrlsById.getOrElse(it.id!!) { null }) }.toSet(),
-        presentationId = presentationId
+        profiles = creators.map { it.toLectureDto(avatarUrlsById.getOrElse(it.id!!) { null }) }.toSet(),
+        presentationId = presentationId,
+        tags = tags,
     )
 
 fun Profile.toLectureDto(avatarUrl: String?): LectureProfileDto =

@@ -49,7 +49,7 @@ class SemesterService(
     fun deleteSemester(id: Long) {
         validateSemesterActions()
         val semester = semesterRepository.findById(id).orElseThrow()
-        semester.lectures.forEach { it.removeProfiles() }
+        semester.lectures.forEach { it.removeCreators() }
         semesterRepository.save(semester)
         semesterRepository.deleteById(id)
     }

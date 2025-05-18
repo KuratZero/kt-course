@@ -49,7 +49,7 @@ class LectureService(
     fun deleteLectureById(id: Long) {
         validateLectureActions()
         val lecture = lectureRepository.findById(id).orElseThrow()
-        lecture.removeProfiles()
+        lecture.removeCreators()
         lectureRepository.save(lecture)
         lectureRepository.deleteById(id)
     }
@@ -57,7 +57,7 @@ class LectureService(
     fun replaceProfiles(id: Long, input: List<String>) {
         validateLectureActions()
         val lecture = lectureRepository.findById(id).orElseThrow()
-        lecture.updateProfiles(profileRepository.findAllByLoginIn(input))
+        lecture.updateCreators(profileRepository.findAllByLoginIn(input))
         lectureRepository.save(lecture)
     }
 
@@ -68,11 +68,11 @@ class LectureService(
         lectureRepository.save(lecture)
     }
 
-    private fun lectureToDto(lecture: Lecture, lang: String): LectureDto =
+    fun lectureToDto(lecture: Lecture, lang: String): LectureDto =
         lecture.toDto(getAvatarsMap(lecture), lang)
 
-    private fun getAvatarsMap(lecture: Lecture): Map<Long, String?> =
-        lecture.profiles.stream()
+    fun getAvatarsMap(lecture: Lecture): Map<Long, String?> =
+        lecture.creators.stream()
             .filter { profile -> profile.avatarId != null }
             .collect(
                 Collectors.toMap(

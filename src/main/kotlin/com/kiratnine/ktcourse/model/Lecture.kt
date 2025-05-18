@@ -23,21 +23,26 @@ class Lecture(
 
     var presentationId: String? = null,
 
-    @ManyToMany(mappedBy = "lectures", fetch = FetchType.LAZY)
-    var profiles: MutableSet<Profile> = mutableSetOf(),
+    val tags: MutableSet<String> = mutableSetOf(),
+
+    @ManyToMany(mappedBy = "createdLectures", fetch = FetchType.LAZY)
+    var creators: MutableSet<Profile> = mutableSetOf(),
+
+    @ManyToMany(mappedBy = "favoriteLectures", fetch = FetchType.LAZY)
+    var favoriteByProfiles: MutableSet<Profile> = mutableSetOf(),
 
     @ManyToOne
     @JoinColumn(name = DbFields.SEMESTER_ID)
     var semester: Semester? = null,
 ) : BaseEntity() {
-    fun updateProfiles(profiles: Collection<Profile>) {
-        this.profiles.clear()
-        profiles.forEach { it.lectures.add(this) }
-        this.profiles.addAll(profiles)
+    fun updateCreators(creators: Collection<Profile>) {
+        this.creators.clear()
+        creators.forEach { it.createdLectures.add(this) }
+        this.creators.addAll(creators)
     }
 
-    fun removeProfiles() {
-        this.profiles.forEach { it.lectures.remove(this) }
-        this.profiles.clear()
+    fun removeCreators() {
+        this.creators.forEach { it.createdLectures.remove(this) }
+        this.creators.clear()
     }
 }

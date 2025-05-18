@@ -11,5 +11,6 @@ data class LectureDto(
     val title: String,
     val description: String,
     val date: LocalDateTime,
-    val profiles: Set<LectureProfileDto>
+    val profiles: Set<LectureProfileDto>,
+    val tags: Set<String>,
 )
